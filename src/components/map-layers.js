@@ -33,7 +33,7 @@ export function getMarker(center) {
 }
 
 export function getSatelliteImages() {
-    const availableYears = ["2018","2021"]
+    const availableYears = ["2018","2021","2024"]
     const satelliteImages = {};
     const urlGeoServer = "https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms";
     const workSpace = "hachathon2025";
