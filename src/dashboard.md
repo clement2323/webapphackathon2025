@@ -141,8 +141,8 @@ marker.addTo(map);
    },
 { ...selectedSentinel2,
   differences,
- [`CLC+ ${year_start}`]: CLCplus2018,
-  [`CLC+ ${year_end}`]: CLCplus2021,
+ [`CLC+ 2018`]: CLCplus2018,
+  [`CLC+ 2021`]: CLCplus2021,
 }
 ).addTo(map);
 
