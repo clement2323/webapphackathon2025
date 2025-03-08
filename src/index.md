@@ -7,7 +7,6 @@ toc: false
   <h2> Petite application pour observer les performance des algorithmes de segmentation </h2>
 </div>
 
-
 <style>
 .hero {
   /* Mise en page de base */
