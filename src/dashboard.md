@@ -121,9 +121,29 @@ const center = [50.850346, 4.351721];
 // Initialiser la carte avec la position centrale du département
 const map = L.map(mapDiv, {
             center: center,
-            zoom: 17,           
+            zoom: 10,           
             maxZoom: 21 //(or even higher)
         });
+
+// Adding the WMS layer
+const CLCplus2018 = L.tileLayer.wms("https://copernicus.discomap.eea.europa.eu/arcgis/services/CLC_plus/CLMS_CLCplus_RASTER_2018_010m_eu/ImageServer/WMSServer?", {
+    layers: "CLMS_CLCplus_RASTER_2018_010m_eu",
+    format: "image/png",
+    transparent: true,
+    version: "1.3.0",
+    opacity: 0.5, 
+    attribution: "© Copernicus CLC+ 2018 - European Environment Agency"
+});
+
+const CLCplus2021 = L.tileLayer.wms("https://copernicus.discomap.eea.europa.eu/arcgis/services/CLC_plus/CLMS_CLCplus_RASTER_2021_010m_eu/ImageServer/WMSServer?", {
+    layers: "CLMS_CLCplus_RASTER_2021_010m_eu",
+    format: "image/png",
+    transparent: true,
+    version: "1.3.0",
+    opacity: 0.5, 
+    attribution: "© Copernicus CLC+ 2021 - European Environment Agency"
+});
+// Add WMS layer to map
 
 // Ajout d'une couche de base OpenStreetMap
 const OSM = getOSM();
@@ -134,8 +154,25 @@ const BORDERS = getClusters(nuts3);
 const Sentinel2 = getSatelliteImages();
 const selectedSentinel2 = filterObject(Sentinel2, [`Sentinel2 ${year_start}`, `Sentinel2 ${year_end}`,])
 
+
 OSM['OpenStreetMap clair'].addTo(map);
 BORDERS["nuts boundaries"].addTo(map);
+
+
+const urlGeoServer = "https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms";
+const workSpace = "hachathon2025";
+
+const differences = L.tileLayer.wms(urlGeoServer, {
+    layers: `${workSpace}:change_polygons_CLC`,
+    format: 'image/png',
+    transparent: true,
+    version: '1.1.0',
+    opacity: 1,
+    maxZoom: 21,
+    styles : "style_multiclass",
+   // CQL_FILTER: "INCLUDE",
+  //  cql_filter: `class='3'`  
+});
 
 marker.addTo(map);
 ```
@@ -145,97 +182,11 @@ marker.addTo(map);
    ...OSM,
    ...OSMDark,  
    },
-{ ...selectedSentinel2}
-//   { ...selectedPleiades,
-//   [`Bâtiments ${year_start}`]: buildingLayerStart,
-//   [`Bâtiments ${year_end}`]: buildingLayerEnd,
-//   }
+{ ...selectedSentinel2,
+  differences,
+ [`CLC+ ${year_start}`]: CLCplus2018,
+  [`CLC+ ${year_end}`]: CLCplus2021,
+}
 ).addTo(map);
 
-// // Définition des labels et couleurs
-// const legendItems = [
-//   {name: "Batiment", color: "rgb(206, 112, 121)"},
-//   {name: "Zone imperméable", color: "rgb(166, 170, 183)"},
-//   {name: "Zone perméable", color: "rgb(152, 119, 82)"},
-//   {name: "Piscine", color: "rgb(98, 208, 255)"},
-//   {name: "Serre", color: "rgb(185, 226, 212)"},
-//   {name: "Sol nu", color: "rgb(187, 176, 150)"},
-//   {name: "Surface eau", color: "rgb(51, 117, 161)"},
-//   {name: "Neige", color: "rgb(233, 239, 254)"},
-//   {name: "Conifère", color: "rgb(18, 100, 33)"},
-//   {name: "Feuillu", color: "rgb(76, 145, 41)"},
-//   {name: "Coupe", color: "rgb(228, 142, 77)"},
-//   {name: "Brousaille", color: "rgb(181, 195, 53)"},
-//   {name: "Pelouse", color: "rgb(140, 215, 106)"},
-//   {name: "Culture", color: "rgb(222, 207, 85)"},
-//   {name: "Terre labourée", color: "rgb(208, 163, 73)"},
-//   {name: "Vigne", color: "rgb(176, 130, 144)"},
-//   {name: "Autre", color: "rgb(34, 34, 34)"}
-// ];
-
-// // Créer les couches individuelles pour chaque classe
-// const predictionLayers = {};
-// legendItems.forEach((item, index) => {
-//   const layerName = `${item.name}`;
-//   const layer = L.tileLayer.wms(selectedPredictions[`Prédictions ${year_end}`]._url, {
-//     ...selectedPredictions[`Prédictions ${year_end}`].options,
-//     cql_filter: `label='${index+1}'`  // index correspond maintenant au bon label
-//   });
-//   predictionLayers[layerName] = layer;
-// });
-
-// // Ajouter le marqueur à la carte
-// marker.addTo(map);
-
-// // Création de la légende à gauche avec texte noir
-// const legend = htl.html`
-//   <div class="legend" style="
-//     position: absolute;
-//     bottom: 20px;
-//     left: 20px;
-//     background: rgba(255, 255, 255, 0.9);
-//     padding: 10px;
-//     border-radius: 5px;
-//     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-//     z-index: 1000;
-//     max-height: 70vh;
-//     overflow-y: auto;
-//     color: black;  /* Texte en noir */
-//   ">
-//     <h4 style="margin: 0 0 10px 0; color: black;">Légende ${year_end}</h4>
-//     ${legendItems.map(item => htl.html`
-//       <div style="display: flex; align-items: center; margin-bottom: 5px">
-//         <div style="
-//           width: 18px;
-//           height: 18px;
-//           background: ${item.color};
-//           margin-right: 8px;
-//           opacity: 0.7;
-//           border-radius: 3px;
-//         "></div>
-//         <span style="color: black;">${item.name}</span>
-//       </div>
-//     `)}
-//   </div>
-// `;
-
-// // Deuxième contrôle : couches de prédiction individuelles avec titre
-// const predictionDetailControl = L.control.layers(null, predictionLayers, {
-//   position: 'topright',
-//   collapsed: true
-// }).addTo(map);
-
-// // Ajout d'un titre au contrôle
-// const predictionControlDiv = predictionDetailControl.getContainer();
-// const title = L.DomUtil.create('div', 'prediction-control-title');
-// title.innerHTML = `<h4 style="
-//   margin: 0 0 8px 0;
-//   padding: 0;
-//   color: black;
-//   font-size: 14px;
-// "> labels ${year_end}</h4>`;
-// predictionControlDiv.insertBefore(title, predictionControlDiv.firstChild);
-
-// // Ajout de la légende à la carte
-// mapDiv.appendChild(legend);
-// ```
+```

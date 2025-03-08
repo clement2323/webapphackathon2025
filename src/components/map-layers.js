@@ -48,37 +48,14 @@ export function getSatelliteImages() {
             version: '1.1.0',
             opacity: 1,
             maxZoom: 21,
+            styles: 'raster_sentinel2_RGB',
+            env: 'nodata:0',
             attribution: `Senbtinel 2 &copy; Copernicus ${year}`
         });
         satelliteImages[`Sentinel2 ${year}`] = layer;
     });
 
     return satelliteImages;
-}
-
-
-export function getPredictions(config) {
-    const { availableYears, name } = config;
-    const predictions = {};
-    const urlGeoServer = "https://geoserver-satellite-images.lab.sspcloud.fr/geoserver/dirag/wms";
-    const workSpace = "dirag";
-
-    // Get tile for each year
-    availableYears.forEach(year => {
-        const layer = L.tileLayer.wms(urlGeoServer, {
-            layers: `${workSpace}:${name}_PREDICTIONS_${year}`,
-            format: 'image/png',
-            transparent: true,
-            version: '1.1.0',
-            opacity: 1,
-            maxZoom: 21,
-            styles : "style_multiclass",
-            CQL_FILTER: "INCLUDE"
-        });
-        predictions[`Prédictions ${year}`] = layer;
-    });
-
-    return predictions;
 }
 
 export function getClusters(geomData) {
@@ -97,7 +74,7 @@ export function getClusters(geomData) {
         fillColor: 'transparent',
         fillOpacity: 0,
         color: 'black',
-        weight: 2,
+        weight: 1,
         opacity: 1
       },
         onEachFeature: addToolTip
