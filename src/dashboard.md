@@ -2,7 +2,7 @@
 import {loadDepartmentGeom, loadDepartmentLevel, loadDepartmentEvol} from "./components/loaders.js";
 import {getConfig} from "./components/config.js";
 import {transformData} from "./components/build-table.js";
-import {getIlotCentroid} from "./utils/fonctions.js";
+import {getCentroid} from "./utils/fonctions.js";
 import {getOSM, getOSMDark, getMarker, getSatelliteImages, getPredictions, getClusters, getEvolutions} from "./components/map-layers.js";
 import {filterObject} from "./components/utils.js";
 ```
@@ -16,10 +16,7 @@ display(titre);
 
 ```js
 const nuts3 = FileAttachment("./data/nuts3.json").json()
-
-// const geom = await loadDepartmentGeom(department);
-// const level = await loadDepartmentLevel(department);
-// const evol = await loadDepartmentEvol(department);
+const statNuts3 = FileAttachment('./data/statNuts3.parquet').parquet()
 const available_years = ['2018','2021']
 const available_nuts = ['BE100','BE251','FRK26','FRJ27']
 ```
@@ -44,80 +41,40 @@ const years_select = view(Inputs.form({
   }
 ))
 ```
+```js
+const placeholder_nuts = "BE100"
+const search = view(
+     Inputs.search(statNuts3, 
+     {
+       placeholder: placeholder_nuts,
+       columns:["NUTS3"]
+     })
+   )
+```
+```js
+const search_table = view(
+    Inputs.table(search, {
+        columns: ["NUTS3", "artificial+", "artificial-", "artificial_net", "NDVI+", "NDVI-", "NDVI_net"]
+    })
+);
+```
+```js
+const center = getCentroid(
+    nuts3,
+    search[0]?.NUTS3||placeholder_nuts ,
+  )
+```
 
 ```js
 const year_start = years_select["year_start"]
 const year_end = years_select["year_end"]
-//const data_select = transformData(evol, level, year_start, year_end);
 ```
 
-```js
- //récupération du centre de l'ilot à partir de l'ilot sélectionné
-const placeholder_nuts = available_nuts[0]
- ```
-
- ```js
-//  const search = view(
-//       Inputs.search(data_select, 
-//       {
-//         placeholder: placeholder_nuts,
-//         columns:["depcom_2018","code"]
-//       })
-//     )
-```
-
-```js
-    // const search_table = view(
-    //   Inputs.table(search, {
-    //     columns: ['depcom_2018', 'code', `aire_${year_end}`, `pourcentage_bati_${year_end}`, 'evol_abs', 'evol_rela'],
-    //     header: {
-    //       depcom_2018: 'Code Commune',
-    //       code: 'Code Îlot',
-    //       [`aire_${year_end}`]: `Surface ${year_end} (m²)`,
-    //       [`pourcentage_bati_${year_end}`]: `Bâti ${year_end} (%)`,
-    //       evol_abs: 'Écart absolu (m²)',
-    //       evol_rela: 'Écart relatif (%)'
-    //     },
-    //     width: {
-    //       depcom_2018: 120,
-    //       code: 100,
-    //       [`aire_${year_end}`]: 120,
-    //       [`pourcentage_bati_${year_end}`]: 90,
-    //       evol_abs: 120,
-    //       evol_rela: 120
-    //     },
-    //     format: {
-    //       [`aire_${year_end}`]: x => Math.round(x),
-    //       [`pourcentage_bati_${year_end}`]: x => Math.round(x),
-    //       evol_abs: x => Math.round(x),
-    //       evol_rela: x => (Math.round(x * 10) / 10)
-    //     },
-    //     sort: {
-    //       column: 'depcom_2018',
-    //       reverse: false
-    //     },
-    //     rows: 10
-    //   })
-    // )
-```
-
-<!-- 
-## Analyse des îlots
-
-```js
-const center = getIlotCentroid(
-    geom,
-    search[0]?.depcom_2018 || placeholder_commune,
-    search[0]?.code || placeholder_ilot
-  )
-console.log(center)
-``` -->
 ```js
 // Initialisation de la carte Leaflet
 const mapDiv = display(document.createElement("div"));
 mapDiv.style = "height: 600px; width: 100%; margin: 0 auto;";
-const center = [50.850346, 4.351721];
-  
+
 // Initialiser la carte avec la position centrale du département
 const map = L.map(mapDiv, {
             center: center,

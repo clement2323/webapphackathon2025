@@ -150,20 +150,21 @@ export function updateLegend(indicator, colorScale, quantiles, unit = '%') {
 
 
 
-export function getIlotCentroid(statistics, depcom, code) {
+export function getCentroid(statistics,nuts3) {
   // Find the feature that matches the depcom and code
   const feature = statistics.features.find(f => 
-    f.properties.depcom_2018 === depcom && f.properties.code === code
+    f.properties.NUTS_ID === nuts3 
   );
 
   if (!feature) {
-    console.error(`No feature found for depcom ${depcom} and code ${code}`);
+    console.error(`No feature found for  ${nuts3}`);
     return null;
   }
 
   // Calculate the centroid of the polygon
-  const polygon = feature.geometry.coordinates[0][0]; // Assuming it's a Polygon
+  const polygon = feature.geometry.coordinates[0]; // Assuming it's a Polygon
   let sumX = 0, sumY = 0;
+
   for (let i = 0; i < polygon.length; i++) {
     sumX += polygon[i][0];
     sumY += polygon[i][1];
