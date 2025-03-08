@@ -102,6 +102,22 @@ const CLCplus2021 = L.tileLayer.wms("https://copernicus.discomap.eea.europa.eu/a
 });
 // Add WMS layer to map
 
+// Add WMS layer for CLC+ 2021 with Invert filter
+const InvertCLC = L.tileLayer.wms("https://copernicus.discomap.eea.europa.eu/arcgis/services/CLC_plus/CLMS_CLCplus_RASTER_2021_010m_eu/ImageServer/WMSServer?", {
+    layers: "CLMS_CLCplus_RASTER_2021_010m_eu",
+    format: "image/png",
+    transparent: true,
+    version: "1.3.0",
+    opacity: 0.35,
+    attribution: "© Copernicus CLC+ 2021 - European Environment Agency"
+});
+
+InvertCLC.on('tileload', function(event) {
+    const tile = event.tile;
+    // Apply the invert CSS filter to the tile image
+    tile.style.filter = 'invert(1)';
+});
+
 // Ajout d'une couche de base OpenStreetMap
 const OSM = getOSM();
 const OSMDark  = getOSMDark();
@@ -143,6 +159,7 @@ marker.addTo(map);
   differences,
  [`CLC+ 2018`]: CLCplus2018,
   [`CLC+ 2021`]: CLCplus2021,
+  [`Inverted CLC+ 2021`]: InvertCLC,
 }
 ).addTo(map);
 

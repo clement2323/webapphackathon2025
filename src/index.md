@@ -3,8 +3,8 @@ toc: false
 ---
 
 <div class="hero">
-  <h1>CRaTT</h1>
-  <h2> Petite application pour observer les performance des algorithmes de segmentation </h2>
+  <h1>CLC+ Delta</h1>
+  <h2> European Big Data Hackathon 2025 Dashboard </h2>
 </div>
 
 <style>
