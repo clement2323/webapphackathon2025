@@ -18,7 +18,8 @@ display(titre);
 const nuts3 = FileAttachment("./data/nuts3.json").json()
 const statNuts3 = FileAttachment('./data/statNuts3.parquet').parquet()
 const available_years = ['2018','2021','2024']
-const available_nuts = ['BE100','BE251','FRK26','FRJ27']
+const available_nuts = ["BG322", "CY000", "CZ072", "DEA54", "EE00A", "EL521", "ES612", "FI1C1", "BE100", "BE251", "FRJ27", "FRK26"]
+
 ```
 
 
