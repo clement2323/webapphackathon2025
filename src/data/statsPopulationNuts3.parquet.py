@@ -47,7 +47,27 @@ new_columns = ['nuts_id', 'population_2018', 'population_2019', 'population_2020
 df.columns = new_columns
 
 df_nuts3 = df[df['nuts_id'].str.len() == 5]
-# df_country = df[df['nuts_id'].str.len() == 2]
 
-buf_bytes = dataframe_to_parquet_bytes(df_nuts3)
+# Sélectionner uniquement les colonnes 'nuts_id' et 'population_2021'
+df = df_nuts3[['nuts_id', 'population_2021']].copy()
+
+# Renommer la colonne 'nuts_id' en 'NUTS3'
+df.rename(columns={'nuts_id': 'NUTS3'}, inplace=True)
+
+
+
+# Construct full S3 path
+path_name="projet-hackathon-ntts-2025/indicators/indic_predictions.parquet"
+
+# Open the file using s3fs and read it with pandas
+with fs.open(path_name, "rb") as f:
+    df_prop = pd.read_parquet(f)
+
+
+# Sorting the DataFrame by NUTS3
+df_prop = df_prop.sort_values(by="NUTS3")
+
+df = df_prop.merge(df, on="NUTS3", how="left")
+
+buf_bytes = dataframe_to_parquet_bytes(df)
 sys.stdout.buffer.write(buf_bytes)

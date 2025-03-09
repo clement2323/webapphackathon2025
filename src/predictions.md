@@ -17,6 +17,7 @@ display(titre);
 ```js
 const nuts3 = FileAttachment("./data/nuts3.json").json()
 const statNuts3 = FileAttachment('./data/proportionNuts3.parquet').parquet()
+const statsPlot = FileAttachment('./data/statsPopulationNuts3.parquet').parquet()
 const available_years = ['2018','2021','2024']
 ```
 
@@ -315,5 +316,39 @@ const layerForest = L.tileLayer.wms("https://image.discomap.eea.europa.eu/arcgis
   [`Forest`]: layerForest
 }
 ).addTo(map);
+
+```
+
+```js
+
+// Charger les données (remplacez `statsPlot` par vos données réelles)
+const data = statsPlot.batches[0]; 
+
+// Vérification si les données sont bien accessibles
+console.log("Data:", data);
+
+// Créer un scatter plot entre artificial_ratio_2021 et population_2021
+const scatterPlot = Plot.plot({
+  width: 600,
+  height: 400,
+  marks: [
+    Plot.dot(data, {
+      x: "artificial_ratio_2021",
+      y: "population_2021",
+      stroke: "red",
+      fill: "red",
+      opacity: 1,
+      r: 4, // Taille des points
+    }),
+    Plot.axisX({ label: "Artificial Ratio 2021 (%)", tickFormat: d => d.toFixed(2) }),
+    Plot.axisY({ label: "Population 2021" }),
+  ]
+});
+
+```
+
+```js
+
+scatterPlot
 
 ```
