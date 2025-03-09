@@ -39,31 +39,31 @@ const search = view(
 ```js
 const search_table = view(
       Inputs.table(search, {
-        columns: ["NUTS3", "artificial_ratio_2018", "artificial_ratio_2021", "artificial_ratio_2024", "artificial_evolution_2018_2024","artificial_evolution_2021_2024"],
+        columns: ["NUTS3","name","artificial_ratio_2018", "artificial_ratio_2021", "artificial_ratio_2024", "artificial_evolution_2018_2024","artificial_evolution_2021_2024"],
         header: {
           NUTS3: 'NUTS3',
           name: 'Name',
-          artificial_ratio_2018: 'Art. Ratio 2018 (%)',
-          artificial_ratio_2021: 'Art. Ratio 2021 (%)',
-          artificial_ratio_2024: 'Art. Ratio 2024 (%)',
-          artificial_ratio_evolution_2018_2024: 'Ratio Evol 2018-2024(%)',
-          artificial_ratio_evolution_2021_2024: 'Ratio Evol 2021-2024(%)'
+          artificial_ratio_2018: 'Art. R. 2018',
+          artificial_ratio_2021: 'Art. R. 2021',
+          artificial_ratio_2024: 'Art. R. 2024',
+          artificial_evolution_2018_2024: 'Evol 2018-2024',
+          artificial_evolution_2021_2024: 'Evol 2021-2024'
         },
         width: {
-          NUTS3: 120,
+          NUTS3: 80,
           name: 120,
-          artificial_ratio_2018: 150,
-          artificial_ratio_2021: 150,
-          artificial_ratio_2024: 150,
-          artificial_ratio_evolution_2018_2024: 180,
-          artificial_ratio_evolution_2021_2024: 180
+          artificial_ratio_2018: 100,
+          artificial_ratio_2021: 100,
+          artificial_ratio_2024: 100,
+          artificial_evolution_2018_2024: 110,
+          artificial_evolution_2021_2024: 110
         },
         format: {
           artificial_ratio_2018: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
           artificial_ratio_2021: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
           artificial_ratio_2024: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
-          artificial_ratio_evolution_2018_2024: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
-          artificial_ratio_evolution_2021_2024: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`
+          artificial_evolution_2018_2024: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
+          artificial_evolution_2021_2024: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`
         },
         sort: {
           column: 'NUTS3',
