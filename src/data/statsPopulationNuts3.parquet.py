@@ -43,8 +43,11 @@ for year in years:
     df[year] = df[year].apply(extract_number)
     df[year].astype("Int64")
 
-df_nuts3 = df[df['geo'].str.len() == 5]
-# df_country = df[df['geo'].str.len() == 2]
+new_columns = ['nuts_id', 'population_2018', 'population_2019', 'population_2020', 'population_2021', 'population_2022', 'population_2023', 'population_2024']
+df.columns = new_columns
+
+df_nuts3 = df[df['nuts_id'].str.len() == 5]
+# df_country = df[df['nuts_id'].str.len() == 2]
 
 buf_bytes = dataframe_to_parquet_bytes(df_nuts3)
 sys.stdout.buffer.write(buf_bytes)
