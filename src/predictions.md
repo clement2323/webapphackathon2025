@@ -348,7 +348,6 @@ const scatterPlot = Plot.plot({
 ```
 
 ```js
-
-scatterPlot
-
+// Centrage du scatter plot avec HTML + CSS
+html`<div style="display: flex; justify-content: center;">${scatterPlot}</div>`;
 ```
