@@ -55,7 +55,7 @@ const search = view(
 ```js
 const search_table = view(
     Inputs.table(search, {
-        columns: ["NUTS3", "artificial+", "artificial-", "artificial_net", "NDVI+", "NDVI-", "NDVI_net"]
+        columns: ["NUTS3", "artificial_ratio", "artificial+", "artificial-", "artificial_net", "NDVI+", "NDVI-", "NDVI_net"]
     })
 );
 ```
@@ -155,12 +155,12 @@ marker.addTo(map);
 ```js
 
 const predictions = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms", {
-            layers: "hachathon2025:tmpmbedp9_6",  // Layer name
+            layers: "hachathon2025:predUE2024",  // Layer name
             format: 'image/png',  // Use image format
             transparent: true,  // Keep background transparent
             version: '1.1.0',  // WMS version
             attribution: "GeoServer Hachathon 2025",
-            cql_filter: `label='1'`
+           // cql_filter: `label='1'`
         });
 
 
