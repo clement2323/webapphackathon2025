@@ -39,8 +39,9 @@ def get_nuts_proportion_classe(year, fs):
     df_filled = df.fillna(0)
     return df_filled
 
-
-df = get_nuts_proportion_classe("2024", fs)
+df_2018 = get_nuts_proportion_classe("2018", fs)
+df_2021 = get_nuts_proportion_classe("2021", fs)
+df_2024 = get_nuts_proportion_classe("2024", fs)
 
 buf_bytes = dataframe_to_parquet_bytes(pd.DataFrame(df))
 
