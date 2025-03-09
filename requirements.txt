@@ -2,3 +2,4 @@ duckdb
 geopandas
 s3fs
 pyarrow
+openpyxl
