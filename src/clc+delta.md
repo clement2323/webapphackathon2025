@@ -56,8 +56,8 @@ const search_table = view(
           artificial_ratio_evolution: 180
         },
         format: {
-          artificial_ratio_2018: x => `${(Math.round(x * 100) / 100).toFixed(2)}%`,
-          artificial_ratio_2021: x => `${(Math.round(x * 100) / 100).toFixed(2)}%`,
+          artificial_ratio_2018: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
+          artificial_ratio_2021: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
           artificial_ratio_evolution: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`
         },
         sort: {
