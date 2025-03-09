@@ -329,7 +329,7 @@ console.log("Data:", data);
 
 // Créer un scatter plot entre artificial_ratio_2021 et population_2021
 const scatterPlot = Plot.plot({
-  width: 600,
+  width: 1000,
   height: 400,
   marks: [
     Plot.dot(data, {
@@ -341,13 +341,12 @@ const scatterPlot = Plot.plot({
       r: 4, // Taille des points
     }),
     Plot.axisX({ label: "Artificial Ratio 2021 (%)", tickFormat: d => d.toFixed(2) }),
-    Plot.axisY({ label: "Population 2021" }),
+    Plot.axisY({ label: "Population 2021 (thousands)", tickFormat: d => (d/1000) }),
   ]
 });
 
 ```
 
 ```js
-// Centrage du scatter plot avec HTML + CSS
-html`<div style="display: flex; justify-content: center;">${scatterPlot}</div>`;
+scatterPlot
 ```
