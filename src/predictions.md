@@ -164,8 +164,8 @@ marker.addTo(map);
 
 ```js
 
-const predictions = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms", {
-            layers: "hachathon2025:predUE2024",  // Layer name
+const predictions_2018 = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms", {
+            layers: "hachathon2025:predUE2018",  // Layer name
             format: 'image/png',  // Use image format
             transparent: true,  // Keep background transparent
             version: '1.1.0',  // WMS version
@@ -173,6 +173,25 @@ const predictions = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspclou
            // cql_filter: `label='1'`
         });
 
+
+const predictions_2021 = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms", {
+            layers: "hachathon2025:predUE2021",  // Layer name
+            format: 'image/png',  // Use image format
+            transparent: true,  // Keep background transparent
+            version: '1.1.0',  // WMS version
+            attribution: "GeoServer Hachathon 2025",
+           // cql_filter: `label='1'`
+        });
+
+
+const predictions_2024 = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms", {
+            layers: "hachathon2025:predUE2024",  // Layer name
+            format: 'image/png',  // Use image format
+            transparent: true,  // Keep background transparent
+            version: '1.1.0',  // WMS version
+            attribution: "GeoServer Hachathon 2025",
+           // cql_filter: `label='1'`
+        });
 
 ```
 
@@ -247,14 +266,14 @@ map.on("overlayadd", function(e) {
   //
   // Si le nom correspond à "predictions" (celui que vous avez dans le control.layers),
   // alors on ajoute la légende sur la carte.
-  if (e.name === "predictions") {
+  if (e.name === "Pred 2018" || e.name === "Pred 2021" || e.name === "Pred 2024") {
     predictionsLegend.addTo(map);
   }
 });
 
 // Écoute l'événement "overlayremove": déclenché lorsqu'un overlay est décoché
 map.on("overlayremove", function(e) {
-  if (e.name === "predictions") {
+  if (e.name === "Pred 2018" || e.name === "Pred 2021" || e.name === "Pred 2024") {
     map.removeControl(predictionsLegend);
   }
 });
@@ -268,7 +287,9 @@ map.on("overlayremove", function(e) {
    ...OSMDark,  
    },
 { ...selectedSentinel2,
-  predictions,
+ [`Pred 2018`]: predictions_2018,
+  [`Pred 2021`]: predictions_2021,
+ [`Pred 2024`]:  predictions_2024,
  [`CLC+ 2018`]: CLCplus2018,
   [`CLC+ 2021`]: CLCplus2021,
   [`Inverted CLC+ 2021`]: InvertCLC,
