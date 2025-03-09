@@ -9,7 +9,7 @@ import {filterObject} from "./components/utils.js";
 
 ```js
 // Crée un élément h1 avec le nom du département
-const titre = html`<h1>Buildings </h1>`;
+const titre = html`<h1>CLC+ Delta</h1>`;
 display(titre);
 ```
 
@@ -24,40 +24,49 @@ const available_nuts = ["BG322", "CY000", "CZ072", "DEA54", "EE00A", "EL521", "E
 
 
 ```js
-const years_select = view(Inputs.form({
-  year_start : Inputs.select(available_years, {value: available_years[0], label: "start"}),
-  year_end : Inputs.select(available_years, {value: available_years[1], label: "end"})
-},
- {
-    template: (formParts) => htl.html`
-     <div>
-       <div style="
-         width: 400px;
-         display: flex;
-         gap: 10px;
-       ">
-         ${Object.values(formParts)}
-       </div>
-     </div>`
-  }
-))
-```
-```js
-const placeholder_nuts = "BE100"
+//récupération du centre de l'ilot à partir de l'ilot sélectionné
+const placeholder_nuts = "BE251"
+const placeholder_name = "Bruxelles"
+const placeholder_nuts_name = placeholder_nuts + " " + placeholder_name
+
 const search = view(
      Inputs.search(statNuts3, 
      {
-       placeholder: placeholder_nuts,
-       columns:["NUTS3"]
+       placeholder: placeholder_nuts_name,
+       columns:["NUTS3","name"]
      })
    )
 ```
 ```js
 const search_table = view(
-    Inputs.table(search, {
-        columns: ["NUTS3", "artificial_ratio", "artificial+", "artificial-", "artificial_net", "NDVI+", "NDVI-", "NDVI_net"]
-    })
-);
+      Inputs.table(search, {
+        columns: ['NUTS3','name','artificial_ratio_2018', 'artificial_ratio_2021', 'artificial_ratio_evolution'],
+        header: {
+          NUTS3: 'NUTS3',
+          name: 'Name',
+          artificial_ratio_2018: 'Art. Ratio 2018 (%)',
+          artificial_ratio_2021: 'Art. Ratio 2021 (%)',
+          artificial_ratio_evolution: 'Art. Ratio Evolution (%)'
+        },
+        width: {
+          NUTS3: 120,
+          Name: 120,
+          artificial_ratio_2018: 150,
+          artificial_ratio_2021: 150,
+          artificial_ratio_evolution: 180
+        },
+        format: {
+          artificial_ratio_2018: x => `${(Math.round(x * 100) / 100).toFixed(2)}%`,
+          artificial_ratio_2021: x => `${(Math.round(x * 100) / 100).toFixed(2)}%`,
+          artificial_ratio_evolution: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`
+        },
+        sort: {
+          column: 'NUTS3',
+          reverse: false
+        },
+        rows: 10
+      })
+    );
 ```
 ```js
 const center = getCentroid(
@@ -66,10 +75,6 @@ const center = getCentroid(
   )
 ```
 
-```js
-const year_start = years_select["year_start"]
-const year_end = years_select["year_end"]
-```
 
 ```js
 // Initialisation de la carte Leaflet
@@ -126,7 +131,7 @@ const marker = getMarker(center);
 const BORDERS = getClusters(nuts3);
 
 const Sentinel2 = getSatelliteImages();
-const selectedSentinel2 = filterObject(Sentinel2, [`Sentinel2 ${year_start}`, `Sentinel2 ${year_end}`,])
+const selectedSentinel2 = filterObject(Sentinel2, [`Sentinel2 2018`, `Sentinel2 2021`, `Sentinel2 2024`])
 
 
 OSM['OpenStreetMap clair'].addTo(map);
@@ -166,91 +171,6 @@ const predictions = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspclou
 
 ```
 
-```js
-
-////////////////////////////////////////////
-// 1) Définition de la légende
-////////////////////////////////////////////
-
-// Tableau des classes de la couche "predictions" (exemple)
-// Tableau des classes et couleurs (vous pouvez adapter les couleurs exactes)
-const predictionsClasses = [
-  { label: "Sealed (1)", color: "#FF0100" },
-  { label: "Woody – needle leaved trees (2)", color: "#238B23" },
-  { label: "Woody – Broadleaved deciduous trees (3)", color: "#80FF00" },
-  { label: "Woody – Broadleaved evergreen trees (4)", color: "#00FF00" },
-  { label: "Low-growing woody plants (bushes, shrubs) (5)", color: "#804000" },
-  { label: "Permanent herbaceous (6)", color: "#CCF24E" },
-  { label: "Periodically herbaceous (7)", color: "#FEFF80" },
-  { label: "Lichens and mosses (8)", color: "#FF81FF" },
-  { label: "Non- and sparsely-vegetated (9)", color: "#BFBFBF" },
-  { label: "Water (10)", color: "#0080FF" }
-];
-
-// Création d’un contrôle Leaflet (position : bottomright)
-const predictionsLegend = L.control({ position: 'bottomright' });
-
-predictionsLegend.onAdd = function (map) {
-  // Conteneur principal <div>
-  const div = L.DomUtil.create("div", "info legend");
-
-  // Rendez le fond blanc/transparent, le texte noir, etc.
-  // Vous pouvez ajuster l’opacité, la couleur de la bordure, etc.
-  div.style.background = "rgba(255, 255, 255, 0.8)";
-  div.style.padding = "8px";
-  div.style.borderRadius = "6px";
-  div.style.border = "1px solid #999";
-  div.style.color = "#000";
-
-  // Un titre en haut de la légende
-  div.innerHTML += "<h4 style='margin-top:0; color: black;'>Predictions</h4>";
-
-  // Pour chaque classe : un petit carré coloré + le label
-  predictionsClasses.forEach((c) => {
-    div.innerHTML += `
-      <div style="display: flex; align-items: center; margin-bottom: 4px; font-size: 14px;">
-        <!-- Carré de couleur -->
-        <span style="
-          width: 18px;
-          height: 18px;
-          background: ${c.color};
-          display: inline-block;
-          margin-right: 8px;
-          border: 1px solid #999;">
-        </span>
-        <span>${c.label}</span>
-      </div>
-    `;
-  });
-
-  return div;
-};
-
-////////////////////////////////////////////
-// 2) Gestion de l’affichage conditionnel
-////////////////////////////////////////////
-
-// Écoute l'événement "overlayadd": activé lorsqu'un overlay est coché dans la liste
-map.on("overlayadd", function(e) {
-  // e.name correspond au libellé de la couche dans le control.layers
-  // ou e.layer est la couche en question.
-  //
-  // Si le nom correspond à "predictions" (celui que vous avez dans le control.layers),
-  // alors on ajoute la légende sur la carte.
-  if (e.name === "predictions") {
-    predictionsLegend.addTo(map);
-  }
-});
-
-// Écoute l'événement "overlayremove": déclenché lorsqu'un overlay est décoché
-map.on("overlayremove", function(e) {
-  if (e.name === "predictions") {
-    map.removeControl(predictionsLegend);
-  }
-});
-
-
-```
 
 ```js
  L.control.layers({
@@ -258,8 +178,6 @@ map.on("overlayremove", function(e) {
    ...OSMDark,  
    },
 { ...selectedSentinel2,
-  predictions,
-  differences,
  [`CLC+ 2018`]: CLCplus2018,
   [`CLC+ 2021`]: CLCplus2021,
   [`Inverted CLC+ 2021`]: InvertCLC,
