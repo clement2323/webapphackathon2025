@@ -277,10 +277,28 @@ map.on("overlayremove", function(e) {
     map.removeControl(predictionsLegend);
   }
 });
+```
+```js 
+const imperviousBuilt = L.tileLayer.wms("https://image.discomap.eea.europa.eu/arcgis/services/GioLandPublic/HRL_BuiltUp_2018/ImageServer/WMSServer?", {
+    layers: "HRL_BuiltUp_2018", // You may need to check the exact layer name in the GetCapabilities response
+    format: 'image/png',
+    transparent: true,
+    version: '1.3.0',
+    attribution: "© Copernicus HRL Built-Up 2018 - European Environment Agency",
+    opacity: 0.7
+});
 
+// Create a new WMS layer for HRL Forest Type 2018
+const layerForest = L.tileLayer.wms("https://image.discomap.eea.europa.eu/arcgis/services/GioLandPublic/HRL_ForestType_2018/ImageServer/WMSServer?", {
+    layers: "HRL_ForestType_2018", // Ensure this is the correct layer name from GetCapabilities
+    format: 'image/png',
+    transparent: true,
+    version: '1.3.0',
+    attribution: "© Copernicus HRL Forest Type 2018 - European Environment Agency",
+    opacity: 0.7
+});
 
 ```
-
 ```js
  L.control.layers({
    ...OSM,
@@ -293,6 +311,8 @@ map.on("overlayremove", function(e) {
  [`CLC+ 2018`]: CLCplus2018,
   [`CLC+ 2021`]: CLCplus2021,
   [`Inverted CLC+ 2021`]: InvertCLC,
+  [`imperviousBuilt`]:imperviousBuilt,
+  [`Forest`]: layerForest
 }
 ).addTo(map);
 
