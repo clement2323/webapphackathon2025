@@ -155,7 +155,7 @@ marker.addTo(map);
 ```js
 
 const predictions = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms", {
-            layers: "hachathon2025:tmpc3sa70r1",  // Layer name
+            layers: "hachathon2025:tmpmbedp9_6",  // Layer name
             format: 'image/png',  // Use image format
             transparent: true,  // Keep background transparent
             version: '1.1.0',  // WMS version
