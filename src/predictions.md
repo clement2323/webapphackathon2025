@@ -16,48 +16,62 @@ display(titre);
 
 ```js
 const nuts3 = FileAttachment("./data/nuts3.json").json()
-const statNuts3 = FileAttachment('./data/statNuts3.parquet').parquet()
+const statNuts3 = FileAttachment('./data/proportionNuts3.parquet').parquet()
 const available_years = ['2018','2021','2024']
-const available_nuts = ["BG322", "CY000", "CZ072", "DEA54", "EE00A", "EL521", "ES612", "FI1C1", "BE100", "BE251", "FRJ27", "FRK26"]
-
 ```
 
 
 ```js
-const years_select = view(Inputs.form({
-  year_start : Inputs.select(available_years, {value: available_years[0], label: "start"}),
-  year_end : Inputs.select(available_years, {value: available_years[1], label: "end"})
-},
- {
-    template: (formParts) => htl.html`
-     <div>
-       <div style="
-         width: 400px;
-         display: flex;
-         gap: 10px;
-       ">
-         ${Object.values(formParts)}
-       </div>
-     </div>`
-  }
-))
-```
-```js
-const placeholder_nuts = "BE100"
+//récupération du centre de l'ilot à partir de l'ilot sélectionné
+const placeholder_nuts = "BE251"
+const placeholder_name = "Bruxelles"
+const placeholder_nuts_name = placeholder_nuts + " " + placeholder_name
+
 const search = view(
      Inputs.search(statNuts3, 
      {
-       placeholder: placeholder_nuts,
-       columns:["NUTS3"]
+       placeholder: placeholder_nuts_name,
+       columns:["NUTS3","name"]
      })
    )
 ```
+
 ```js
 const search_table = view(
-    Inputs.table(search, {
-        columns: ["NUTS3", "artificial_ratio", "artificial+", "artificial-", "artificial_net", "NDVI+", "NDVI-", "NDVI_net"]
-    })
-);
+      Inputs.table(search, {
+        columns: ["NUTS3", "artificial_ratio_2018", "artificial_ratio_2021", "artificial_ratio_2024", "artificial_evolution_2018_2024","artificial_evolution_2021_2024"],
+        header: {
+          NUTS3: 'NUTS3',
+          name: 'Name',
+          artificial_ratio_2018: 'Art. Ratio 2018 (%)',
+          artificial_ratio_2021: 'Art. Ratio 2021 (%)',
+          artificial_ratio_2024: 'Art. Ratio 2024 (%)',
+          artificial_ratio_evolution_2018_2024: 'Ratio Evol 2018-2024(%)',
+          artificial_ratio_evolution_2021_2024: 'Ratio Evol 2021-2024(%)'
+        },
+        width: {
+          NUTS3: 120,
+          name: 120,
+          artificial_ratio_2018: 150,
+          artificial_ratio_2021: 150,
+          artificial_ratio_2024: 150,
+          artificial_ratio_evolution_2018_2024: 180,
+          artificial_ratio_evolution_2021_2024: 180
+        },
+        format: {
+          artificial_ratio_2018: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
+          artificial_ratio_2021: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
+          artificial_ratio_2024: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
+          artificial_ratio_evolution_2018_2024: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`,
+          artificial_ratio_evolution_2021_2024: x => `${(Math.round(x * 10) / 10).toFixed(1)}%`
+        },
+        sort: {
+          column: 'NUTS3',
+          reverse: false
+        },
+        rows: 10
+      })
+    );
 ```
 ```js
 const center = getCentroid(
@@ -66,10 +80,6 @@ const center = getCentroid(
   )
 ```
 
-```js
-const year_start = years_select["year_start"]
-const year_end = years_select["year_end"]
-```
 
 ```js
 // Initialisation de la carte Leaflet
@@ -126,7 +136,7 @@ const marker = getMarker(center);
 const BORDERS = getClusters(nuts3);
 
 const Sentinel2 = getSatelliteImages();
-const selectedSentinel2 = filterObject(Sentinel2, [`Sentinel2 ${year_start}`, `Sentinel2 ${year_end}`,])
+const selectedSentinel2 = filterObject(Sentinel2, [`Sentinel2 2018`, `Sentinel2 2021`, `Sentinel2 2024`])
 
 
 OSM['OpenStreetMap clair'].addTo(map);
@@ -259,7 +269,6 @@ map.on("overlayremove", function(e) {
    },
 { ...selectedSentinel2,
   predictions,
-  differences,
  [`CLC+ 2018`]: CLCplus2018,
   [`CLC+ 2021`]: CLCplus2021,
   [`Inverted CLC+ 2021`]: InvertCLC,
