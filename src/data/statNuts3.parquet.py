@@ -16,6 +16,9 @@ fs = s3fs.S3FileSystem(
 path="projet-hackathon-ntts-2025/indicators/indicateurs_departements.parquet"
 data = pd.read_parquet(path, filesystem=fs)
 
+# Sorting the DataFrame by NUTS3
+data = data.sort_values(by="NUTS3")
+
 buf_bytes = dataframe_to_parquet_bytes(data)
 
 # Write the bytes to standard output

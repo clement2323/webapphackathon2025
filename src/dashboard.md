@@ -151,12 +151,28 @@ const differences = L.tileLayer.wms(urlGeoServer, {
 marker.addTo(map);
 ```
 
+
+```js
+
+const predictions = L.tileLayer.wms("https://geoserver-hachathon2025.lab.sspcloud.fr/geoserver/hachathon2025/wms", {
+            layers: "hachathon2025:tmpc3sa70r1",  // Layer name
+            format: 'image/png',  // Use image format
+            transparent: true,  // Keep background transparent
+            version: '1.1.0',  // WMS version
+            attribution: "GeoServer Hachathon 2025",
+            cql_filter: `label='1'`
+        });
+
+
+```
+
 ```js
  L.control.layers({
    ...OSM,
    ...OSMDark,  
    },
 { ...selectedSentinel2,
+  predictions,
   differences,
  [`CLC+ 2018`]: CLCplus2018,
   [`CLC+ 2021`]: CLCplus2021,
